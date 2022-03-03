@@ -52,13 +52,6 @@ const Wallet = () => {
   window.ethereum.on("accountsChanged", accountsChangeHandler);
   window.ethereum.on("chainChanged", chainChangedHandler);
 
-  // useEffect(() => {
-
-  //   if (userAccount) {
-  //     getAccountBalance();
-  //   }
-  // }, [userAccount]);
-
   return (
     <div className="Wallet">
       <div className="error-display">
