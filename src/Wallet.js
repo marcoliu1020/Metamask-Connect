@@ -1,8 +1,8 @@
 // https://docs.metamask.io/guide/ethereum-provider.html#using-the-provider
 
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
-import "./Wallet.css"
+import { useState } from "react";
+import "./Wallet.css";
 
 const Wallet = () => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -29,16 +29,12 @@ const Wallet = () => {
 
   const accountsChangeHandler = (accounts) => {
     setUserAccount(accounts[0]);
+    getAccountBalance(accounts[0]);
   };
 
-  const chainChangedHandler = () => {
-    // reload the page to avoid any errors with chain change mid use of application
-    window.location.reload();
-  };
-
-  const getAccountBalance = () => {
+  const getAccountBalance = (account) => {
     window.ethereum
-      .request({ method: "eth_getBalance", params: [userAccount, "latest"] })
+      .request({ method: "eth_getBalance", params: [account, "latest"] })
       .then((balance) => {
         setUserBalance(ethers.utils.formatEther(balance));
       })
@@ -47,19 +43,27 @@ const Wallet = () => {
       });
   };
 
+  const chainChangedHandler = () => {
+    // reload the page to avoid any errors with chain change mid use of application
+    window.location.reload();
+  };
+
   // events
   window.ethereum.on("accountsChanged", accountsChangeHandler);
   window.ethereum.on("chainChanged", chainChangedHandler);
 
-  useEffect(() => {
-    if (userAccount) {
-      getAccountBalance();
-    }
-  }, [userAccount]);
+  // useEffect(() => {
+
+  //   if (userAccount) {
+  //     getAccountBalance();
+  //   }
+  // }, [userAccount]);
 
   return (
     <div className="Wallet">
-      <h1>{errorMessage}</h1>
+      <div className="error-display">
+        <h1>{errorMessage}</h1>
+      </div>
 
       <div className="address-display">
         <h3>Address: {userAccount}</h3>
@@ -69,10 +73,7 @@ const Wallet = () => {
         <h3>Balance: {userBalance}</h3>
       </div>
 
-      <button onClick={connectWalletHandler}>
-        Connect Wallet
-      </button>
-
+      <button onClick={connectWalletHandler}>Connect Wallet</button>
     </div>
   );
 };
